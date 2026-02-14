@@ -4,8 +4,12 @@ import { ClerkProvider } from '@clerk/nextjs';
 import { dark } from '@clerk/themes';
 
 export const metadata: Metadata = {
-  title: 'Spirals MC - Staff Application',
-  description: 'A Minecraft-themed staff application portal',
+  title: 'SpiralsMC Staff Application',
+  description: 'Apply for Staff at SpiralsMC',
+  icons: {
+    icon: '/infxminecraft2.png', // Ye tumhari image use karega as favicon
+    apple: '/infxminecraft2.png',
+  },
 };
 
 export default function RootLayout({
