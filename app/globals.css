@@ -1,26 +1,73 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  /* Colors */
+  --color-primary: #80ff1f;
+  --color-primary-dark: #36b00b;
+  --color-primary-alt: #39d339;
+  --color-mc-gray: #c6c6c6;
+  --color-mc-dark: #212121;
+  --color-mc-panel: #1d1d1dd0;
+  --color-mc-border-light: #ffffff;
+  --color-mc-border-shadow: #373737;
+  --color-gui-bg: rgba(20, 20, 20, 0.85);
+  --color-gui-border: #545454;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Fonts */
+  --font-display: "Space Grotesk", sans-serif;
+  --font-pixel: "VT323", monospace;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* Background Images */
+  --background-image-stone-pattern: url('data:image/svg+xml,%3Csvg width=\'64\' height=\'64\' viewBox=\'0 0 64 64\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 0h64v64H0z\' fill=\'%231c1c1c\'/%3E%3Cpath d=\'M0 0h32v32H0z\' fill=\'%23242424\'/%3E%3Cpath d=\'M32 32h32v32H32z\' fill=\'%23242424\'/%3E%3Cpath d=\'M0 32h32v32H0z\' fill=\'%231c1c1c\'/%3E%3C/svg%3E');
+  --background-image-xp-bar: linear-gradient(to bottom, #80ff1f, #36b00b);
+
+  /* Shadows */
+  --shadow-mc-inset: inset -2px -2px 0px 0px #373737, inset 2px 2px 0px 0px #ffffff;
+  --shadow-mc-outset: inset -2px -2px 0px 0px #373737, inset 2px 2px 0px 0px #ffffff, 2px 2px 0px 0px #000000;
+  --shadow-mc-gui: inset 2px 2px 0px #8b8b8b, inset -2px -2px 0px #2b2b2b;
+  --shadow-mc-slot: inset 2px 2px 0px #000000, inset -2px -2px 0px #3d3d3d;
+  --shadow-mc-btn: inset 2px 2px 0px rgba(255, 255, 255, 0.2), inset -2px -2px 0px rgba(0, 0, 0, 0.4), 0 4px 0 #1a2f1a;
+  --shadow-mc-btn-hover: inset 2px 2px 0px rgba(255, 255, 255, 0.3), inset -2px -2px 0px rgba(0, 0, 0, 0.3), 0 4px 0 #1a2f1a;
+  --shadow-mc-btn-active: inset 2px 2px 0px rgba(0, 0, 0, 0.4), inset -2px -2px 0px rgba(255, 255, 255, 0.2), 0 0 0 #1a2f1a;
+  --shadow-stone-btn: inset 2px 2px 0px #b0b0b0, inset -2px -2px 0px #404040, 2px 2px 0px #000000;
+  --shadow-stone-btn-active: inset 2px 2px 0px #404040, inset -2px -2px 0px #b0b0b0, 0px 0px 0px #000000;
+
+  /* Animations */
+  --animate-float: float 4s ease-in-out infinite;
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+      transform: translateY(-10px) rotate(5deg);
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom utilities */
+@layer utilities {
+  .text-outline-mc {
+    -webkit-text-stroke: 1px #000;
+    text-shadow: 3px 3px 0 #000;
+  }
+
+  .pixelated {
+    image-rendering: pixelated;
+  }
+}
+
+/* Base styles */
+@layer base {
+  body {
+    background-color: #0a0c0a;
+    background-image: radial-gradient(#1a1f1a 1px, transparent 1px);
+    background-size: 20px 20px;
+    @apply text-gray-200 min-h-screen flex flex-col overflow-x-hidden font-display selection:bg-primary/30 selection:text-white;
+  }
 }
