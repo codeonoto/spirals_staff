@@ -6,7 +6,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import LandingPage from '../components/LandingPage';
 import ApplicationForm from '../components/ApplicationForm';
-import LoadingScreen from '../components/LoadingScreen'; // Import naya component
+import LoadingScreen from '../components/LoadingScreen'; // Ensure this is created
 import { useUser } from '@clerk/nextjs';
 import { ViewState } from '../types';
 
@@ -14,25 +14,44 @@ export default function Home() {
   const { user, isLoaded } = useUser();
   const [view, setView] = useState<ViewState>('landing');
   const [hasApplied, setHasApplied] = useState(false);
-  // NEW: Initial App Loading State
   const [isAppLoading, setIsAppLoading] = useState(true);
 
+  // 1. Sync Logic for Clerk Metadata
   useEffect(() => {
     if (isLoaded && user?.publicMetadata?.hasApplied) {
       setHasApplied(true);
     }
   }, [isLoaded, user]);
 
+  // 2. SCROLL LOCK LOGIC (Fixes scroll during loading)
+  useEffect(() => {
+    if (isAppLoading) {
+      document.body.style.overflow = 'hidden'; // Scroll lock jab loading ho
+    } else {
+      document.body.style.overflow = 'auto'; // Unlock jab load ho jaye
+    }
+    // Cleanup function to prevent bugs
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isAppLoading]);
+
+  // 3. SCROLL TO TOP FIX (Switching between Landing/Form)
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [view]);
+
   return (
     <div className='flex flex-col min-h-screen relative'>
-      {/* 1. Loading Screen Layer */}
+      {/* Loading Screen Overlay */}
       {isAppLoading && (
         <LoadingScreen onFinished={() => setIsAppLoading(false)} />
       )}
 
-      {/* Content only starts appearing when loading is done */}
+      {/* Main Content Container */}
       <div
         className={`transition-opacity duration-700 ${isAppLoading ? 'opacity-0' : 'opacity-100'}`}>
+        {/* Background Image Layer */}
         <div className='fixed inset-0 z-[-1]'>
           <img
             alt='Minecraft Background'

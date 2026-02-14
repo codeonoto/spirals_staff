@@ -59,7 +59,7 @@ export async function POST(req: Request) {
           value: mcqData
             .map(
               (item: any, i: number) =>
-                `**Q${i + 1}:** ${item.question}\n**Selected:** ${item.selected} ${item.isCorrect ? '✅' : '❌'}`,
+                `**Q${i + 1}:** ${item.question}\n> **Selected:** ${item.selected} ${item.isCorrect ? '✅' : '❌'}`,
             )
             .join('\n')
             .slice(0, 1024),
