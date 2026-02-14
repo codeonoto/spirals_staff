@@ -21,7 +21,9 @@ const Footer: React.FC = () => {
         {/* Right Side: Social Links (Mobile Optimized) */}
         <div className='flex items-center gap-4'>
           <a
-            href='#'
+            href='https://discord.gg/J2ZNqmz6Wa'
+            target='_blank'
+            rel='noopener noreferrer'
             className='bg-[#212121]/60 px-4 sm:px-5 py-2 border border-gray-700 hover:border-primary/50 hover:bg-black/60 transition-all duration-300 font-pixel text-lg sm:text-xl text-gray-400 hover:text-primary shadow-lg rounded-sm active:translate-y-0.5'>
             DISCORD!
           </a>

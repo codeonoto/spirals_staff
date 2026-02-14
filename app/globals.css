@@ -23,7 +23,8 @@
   --background-image-stone-pattern: url('data:image/svg+xml,%3Csvg width=\'64\' height=\'64\' viewBox=\'0 0 64 64\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 0h64v64H0z\' fill=\'%231c1c1c\'/%3E%3Cpath d=\'M0 0h32v32H0z\' fill=\'%23242424\'/%3E%3Cpath d=\'M32 32h32v32H32z\' fill=\'%23242424\'/%3E%3Cpath d=\'M0 32h32v32H0z\' fill=\'%231c1c1c\'/%3E%3C/svg%3E');
   --background-image-xp-bar: linear-gradient(to bottom, #80ff1f, #36b00b);
 
-  /* Shadows */
+  /* Shadows - Missing shadow-mc-card added here */
+  --shadow-mc-card: inset 0 0 0 1px rgba(255, 255, 255, 0.05), 0 0 0 2px #111, 0 0 0 4px #555, 0 10px 20px rgba(0, 0, 0, 0.5);
   --shadow-mc-inset: inset -2px -2px 0px 0px #373737, inset 2px 2px 0px 0px #ffffff;
   --shadow-mc-outset: inset -2px -2px 0px 0px #373737, inset 2px 2px 0px 0px #ffffff, 2px 2px 0px 0px #000000;
   --shadow-mc-gui: inset 2px 2px 0px #8b8b8b, inset -2px -2px 0px #2b2b2b;
@@ -70,4 +71,15 @@
     background-size: 20px 20px;
     @apply text-gray-200 min-h-screen flex flex-col overflow-x-hidden font-display selection:bg-primary/30 selection:text-white;
   }
+}
+
+/* Hide Number Input Arrows */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
 }

@@ -7,37 +7,71 @@ export async function POST(req: Request) {
     if (!user)
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    // 1. Ek baar check karo user ne pehle toh apply nahi kiya
+    // metadata check - spam prevention
     if (user.publicMetadata.hasApplied) {
       return NextResponse.json({ error: 'Already applied' }, { status: 400 });
     }
 
-    const body = await req.json();
+    // Destructure platform from request body
+    const { ign, age, platform, writtenData, mcqData, totalScore } =
+      await req.json();
 
-    // Discord details nikaalo
     const discordAccount = user.externalAccounts.find(
       (acc) => acc.provider === 'oauth_discord',
     );
-    const discordTag = discordAccount?.username || user.username || 'Unknown';
-    const discordId = discordAccount?.externalId || 'N/A';
+    const discordMention = discordAccount
+      ? `<@${discordAccount.externalId}>`
+      : 'N/A';
 
-    // 2. Discord Webhook Content
+    // Discord Embed Construction with Platform info
     const embed = {
-      title: '🛡️ NEW STAFF APPLICATION',
-      color: 16102144, // Amber/Gold color
+      title: '🛡️ NEW STAFF APPLICATION RECEIVED',
+      color: 8453919, // Minecraft Green
       thumbnail: { url: user.imageUrl },
       fields: [
-        { name: 'Minecraft IGN', value: `\`${body.ign}\``, inline: true },
-        { name: 'Age', value: body.age, inline: true },
         {
-          name: 'Discord Account',
-          value: `<@${discordId}> (${discordTag})`,
+          name: '👤 Applicant Info',
+          value: `**IGN:** \`${ign}\`\n**Age:** ${age}\n**Discord:** ${discordMention}`,
+          inline: true,
+        },
+        {
+          name: '🎮 Platform',
+          value: `\`${platform}\``, // New Platform field
+          inline: true,
+        },
+
+        // Detailed Written Scenarios
+        {
+          name: '📝 Written Scenarios (Detailed)',
+          value: writtenData
+            .map(
+              (item: any, i: number) =>
+                `**Q${i + 1}: ${item.question}**\n> ${item.answer}`,
+            )
+            .join('\n\n')
+            .slice(0, 1024),
           inline: false,
         },
-        { name: 'Reason', value: body.reason },
-        { name: 'Scenario Action', value: body.scenario },
+
+        // MCQ detailed results
+        {
+          name: '📊 Knowledge Test (MCQs)',
+          value: mcqData
+            .map(
+              (item: any, i: number) =>
+                `**Q${i + 1}:** ${item.question}\n**Selected:** ${item.selected} ${item.isCorrect ? '✅' : '❌'}`,
+            )
+            .join('\n')
+            .slice(0, 1024),
+          inline: false,
+        },
+        {
+          name: '🏆 Final Exam Score',
+          value: `**${totalScore}/10 Correct**`,
+          inline: true,
+        },
       ],
-      footer: { text: 'SpiralsMC • Recruitment System' },
+      footer: { text: `User ID: ${user.id} • SpiralsMC Recruitment System` },
       timestamp: new Date().toISOString(),
     };
 
@@ -49,7 +83,6 @@ export async function POST(req: Request) {
 
     if (!webhookRes.ok) throw new Error('Webhook failed');
 
-    // 3. User Metadata update karo (One-time apply limit)
     const client = await clerkClient();
     await client.users.updateUserMetadata(user.id, {
       publicMetadata: { hasApplied: true },
