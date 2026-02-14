@@ -22,7 +22,7 @@ const Header: React.FC = () => {
           total: data.totalMembers,
           isOnline: data.online,
         });
-      } catch (err) {
+      } catch (error) {
         console.error('Status fetch failed');
       }
     };
