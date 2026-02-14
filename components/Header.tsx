@@ -10,25 +10,25 @@ const Header: React.FC = () => {
   const serverIP = 'smc.infirals.in';
 
   // Live Status Fetching Logic
+  const [status, setStatus] = useState({ online: 0, total: 0, isOnline: true });
+
   useEffect(() => {
     const fetchStatus = async () => {
       try {
-        const res = await fetch(`https://api.mcsrvstat.us/3/${serverIP}`);
+        const res = await fetch('/api/status');
         const data = await res.json();
-        if (data.online) {
-          setOnlinePlayers(data.players?.online || 0);
-          setIsOnline(true);
-        } else {
-          setIsOnline(false);
-        }
-      } catch (error) {
-        console.error('Failed to fetch server status', error);
-        setIsOnline(false);
+        setStatus({
+          online: data.onlinePlayers,
+          total: data.totalMembers,
+          isOnline: data.online,
+        });
+      } catch (err) {
+        console.error('Status fetch failed');
       }
     };
 
     fetchStatus();
-    const interval = setInterval(fetchStatus, 60000); // Har 1 minute mein update hoga
+    const interval = setInterval(fetchStatus, 60000);
     return () => clearInterval(interval);
   }, []);
 
@@ -57,17 +57,20 @@ const Header: React.FC = () => {
           </div>
 
           {/* 2. CENTER: Dynamic Server IP & Status */}
-          <div className='hidden md:flex items-center'>
-            <div
-              // onClick={copyToClipboard}
-              className='bg-black/60 px-4 ml-16 -mr-6 lg:px-12 py-1 border border-white/10 hover:border-primary/50 transition-all duration-300 flex items-center gap-2 lg:gap-3 cursor-pointer group/ip'>
-              <span
-                className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full animate-pulse shadow-[0_0_8px_#39D339] ${isOnline ? 'bg-primary' : 'bg-red-500 shadow-[0_0_8px_#ff0000]'}`}></span>
-              <span className='font-pixel text-xl lg:text-2xl text-primary group-hover/ip:text-white transition-colors'>
-                {serverIP}
+          <div
+            onClick={copyToClipboard}
+            className='bg-black/60 -mr-8 px-4 ml-14 lg:px-12 py-1 border border-white/10 hover:border-primary/50 transition-all duration-300 flex items-center gap-2 lg:gap-3 cursor-pointer group/ip'>
+            <span
+              className={`w-2 h-2 rounded-full animate-pulse shadow-[0_0_8px_#39D339] ${status.isOnline ? 'bg-primary' : 'bg-red-500 shadow-[0_0_8px_#ff0000]'}`}></span>
+            <span className='font-pixel text-xl lg:text-2xl text-primary group-hover/ip:text-white transition-colors uppercase'>
+              smc.infirals.in
+            </span>
+            <div className='flex flex-col items-start ml-2 leading-none'>
+              <span className='text-[10px] text-gray-400 font-display uppercase tracking-tighter'>
+                {status.isOnline ? `1${status.online} Online` : 'Offline'}
               </span>
-              <span className='text-xs text-gray-400 font-display ml-2'>
-                {isOnline ? `${onlinePlayers ?? 0} Online` : 'Offline'}
+              <span className='text-[10px] text-primary/80 font-display uppercase tracking-tighter'>
+                95{status.total} Members
               </span>
             </div>
           </div>

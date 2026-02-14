@@ -1,17 +1,29 @@
 import { NextResponse } from 'next/server';
+import { clerkClient } from '@clerk/nextjs/server';
 
 export async function GET() {
   try {
-    // Apne server ka IP yahan daalein (e.g., play.spiralsmc.com)
-    const SERVER_IP = 'smc.infirals.in';
-    const response = await fetch(`https://api.mcsrvstat.us/3/${SERVER_IP}`);
-    const data = await response.json();
+    const serverIP = 'smc.infirals.in';
+
+    // 1. Fetch Online Players from MC Server
+    const mcRes = await fetch(`https://api.mcsrvstat.us/3/${serverIP}`);
+    const mcData = await mcRes.json();
+
+    // 2. Fetch Total Registered Members from Clerk
+    const client = await clerkClient();
+    const totalMembers = await client.users.getCount();
 
     return NextResponse.json({
-      online: data.online,
-      players: data.players?.online || 0,
+      online: mcData.online,
+      onlinePlayers: mcData.players?.online || 0,
+      totalMembers: totalMembers || 0,
     });
   } catch (error) {
-    return NextResponse.json({ online: false, players: 0 }, { status: 500 });
+    console.error('Status error:', error);
+    return NextResponse.json({
+      online: false,
+      onlinePlayers: 0,
+      totalMembers: 0,
+    });
   }
 }
